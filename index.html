@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>AUT CMMS</title>
+
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        Arial,
+        "Noto Sans Thai",
+        sans-serif;
+      background: #f1f5f9;
+    }
+
+    .app-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow:
+        0 10px 30px
+        rgba(15, 23, 42, .10);
+    }
+
+    .profile-image {
+      width: 88px;
+      height: 88px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid #dbeafe;
+      background: #f1f5f9;
+    }
+
+    .input-control {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
+
+    .input-control:focus {
+      border-color: #2563eb;
+      box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, .12);
+    }
+
+    .btn-primary {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-primary:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<? if (!registered) { ?>
+
+
+  <!-- ========================================= -->
+  <!-- REGISTER -->
+  <!-- ========================================= -->
+
+  <div
+    id="registerPage"
+    class="app-container">
+
+    <div class="card">
+
+
+      <!-- Header -->
+
+      <div class="text-center mb-6">
+
+        <div
+          class="text-blue-600
+                 text-3xl
+                 font-bold">
+
+          AUT CMMS
+
+        </div>
+
+        <div
+          class="text-slate-500
+                 text-sm
+                 mt-1">
+
+          ระบบแจ้งซ่อมและบริหารงานซ่อมบำรุง
+
+        </div>
+
+      </div>
+
+
+      <!-- LINE Profile -->
+
+      <div class="text-center mb-6">
+
+        <? if (user.pictureUrl) { ?>
+
+          <img
+            class="profile-image mx-auto"
+            src="<?= user.pictureUrl ?>"
+            alt="LINE Profile">
+
+        <? } else { ?>
+
+          <div
+            class="profile-image
+                   mx-auto
+                   flex
+                   items-center
+                   justify-center
+                   text-3xl">
+
+            👤
+
+          </div>
+
+        <? } ?>
+
+
+        <div
+          class="mt-3
+                 text-lg
+                 font-semibold
+                 text-slate-800">
+
+          <?= user.displayName ?>
+
+        </div>
+
+
+        <div
+          class="text-sm
+                 text-slate-500">
+
+          ยินดีต้อนรับ
+
+        </div>
+
+      </div>
+
+
+      <!-- Message -->
+
+      <div
+        class="bg-blue-50
+               border
+               border-blue-100
+               rounded-xl
+               p-4
+               mb-5">
+
+        <div
+          class="text-blue-800
+                 font-semibold
+                 text-sm">
+
+          👋 ลงทะเบียนใช้งานครั้งแรก
+
+        </div>
+
+        <div
+          class="text-blue-700
+                 text-xs
+                 mt-1">
+
+          กรุณากรอกข้อมูลเพื่อเริ่มใช้งาน AUT CMMS
+
+        </div>
+
+      </div>
+
+
+      <!-- Name -->
+
+      <div class="mb-4">
+
+        <label
+          class="block
+                 text-sm
+                 font-medium
+                 text-slate-700
+                 mb-2">
+
+          ชื่อ - นามสกุล
+
+          <span class="text-red-500">*</span>
+
+        </label>
+
+
+        <input
+          id="name"
+          type="text"
+          class="input-control"
+          placeholder="กรอกชื่อ - นามสกุล">
+
+      </div>
+
+
+      <!-- Email -->
+
+      <div class="mb-5">
+
+        <label
+          class="block
+                 text-sm
+                 font-medium
+                 text-slate-700
+                 mb-2">
+
+          Email
+
+          <span class="text-red-500">*</span>
+
+        </label>
+
+
+        <input
+          id="email"
+          type="email"
+          class="input-control"
+          placeholder="example@company.com">
+
+      </div>
+
+
+      <!-- Department -->
+
+      <div class="mb-5">
+
+        <label
+          class="block
+                 text-sm
+                 font-medium
+                 text-slate-700
+                 mb-2">
+
+          แผนก
+
+          <span class="text-red-500">*</span>
+
+        </label>
+
+
+        <select
+          id="department"
+          class="input-control">
+
+          <option value="">
+            กำลังโหลดแผนก...
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Error -->
+
+      <div
+        id="errorMessage"
+        class="hidden
+               bg-red-50
+               border
+               border-red-100
+               text-red-600
+               rounded-xl
+               p-3
+               text-sm
+               mb-4">
+
+      </div>
+
+
+      <!-- Button -->
+
+      <button
+        id="registerButton"
+        class="btn-primary"
+        onclick="submitRegister()">
+
+        ลงทะเบียน
+
+      </button>
+
+
+    </div>
+
+  </div>
+
+
+<? } else { ?>
+
+
+  <!-- ========================================= -->
+  <!-- MAIN -->
+  <!-- ========================================= -->
+
+  <div
+    id="mainPage"
+    class="min-h-screen
+           bg-slate-100
+           p-5">
+
+
+    <div
+      class="max-w-5xl
+             mx-auto">
+
+
+      <!-- Header -->
+
+      <div
+        class="bg-white
+               rounded-2xl
+               p-5
+               shadow-sm
+               mb-5">
+
+        <div
+          class="flex
+                 items-center
+                 gap-4">
+
+
+          <? if (user.pictureUrl) { ?>
+
+            <img
+              src="<?= user.pictureUrl ?>"
+              class="w-14
+                     h-14
+                     rounded-full
+                     object-cover">
+
+          <? } ?>
+
+
+          <div>
+
+            <div
+              class="text-xl
+                     font-bold
+                     text-slate-800">
+
+              AUT CMMS
+
+            </div>
+
+            <div
+              class="text-sm
+                     text-slate-500">
+
+              สวัสดี <?= user.displayName ?>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- User -->
+
+      <div
+        class="grid
+               grid-cols-1
+               sm:grid-cols-3
+               gap-4">
+
+
+        <div
+          class="bg-white
+                 rounded-2xl
+                 p-5
+                 shadow-sm">
+
+          <div
+            class="text-sm
+                   text-slate-500">
+
+            User ID
+
+          </div>
+
+          <div
+            class="mt-2
+                   font-medium
+                   text-slate-800
+                   break-all">
+
+            <?= user.userId ?>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="bg-white
+                 rounded-2xl
+                 p-5
+                 shadow-sm">
+
+          <div
+            class="text-sm
+                   text-slate-500">
+
+            ชื่อ
+
+          </div>
+
+          <div
+            class="mt-2
+                   font-medium
+                   text-slate-800">
+
+            <?= userData.name ?>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="bg-white
+                 rounded-2xl
+                 p-5
+                 shadow-sm">
+
+          <div
+            class="text-sm
+                   text-slate-500">
+
+            แผนก
+
+          </div>
+
+          <div
+            class="mt-2
+                   font-medium
+                   text-slate-800">
+
+            <?= userData.department_name ?>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- CMMS Menu -->
+
+      <div
+        class="mt-5
+               grid
+               grid-cols-2
+               sm:grid-cols-4
+               gap-4">
+
+
+        <button
+          onclick="openRepair()"
+          class="bg-white
+                 rounded-2xl
+                 p-5
+                 text-left
+                 shadow-sm
+                 hover:shadow-md
+                 transition">
+
+          <div class="text-3xl mb-3">
+            🔧
+          </div>
+
+          <div
+            class="font-semibold
+                   text-slate-800">
+
+            แจ้งซ่อม
+
+          </div>
+
+          <div
+            class="text-xs
+                   text-slate-500
+                   mt-1">
+
+            แจ้งงานซ่อมใหม่
+
+          </div>
+
+        </button>
+
+
+        <button
+          onclick="openMyWork()"
+          class="bg-white
+                 rounded-2xl
+                 p-5
+                 text-left
+                 shadow-sm
+                 hover:shadow-md
+                 transition">
+
+          <div class="text-3xl mb-3">
+            📋
+          </div>
+
+          <div
+            class="font-semibold
+                   text-slate-800">
+
+            My Work
+
+          </div>
+
+          <div
+            class="text-xs
+                   text-slate-500
+                   mt-1">
+
+            งานที่ได้รับมอบหมาย
+
+          </div>
+
+        </button>
+
+
+        <button
+          onclick="openPM()"
+          class="bg-white
+                 rounded-2xl
+                 p-5
+                 text-left
+                 shadow-sm
+                 hover:shadow-md
+                 transition">
+
+          <div class="text-3xl mb-3">
+            🛠️
+          </div>
+
+          <div
+            class="font-semibold
+                   text-slate-800">
+
+            PM
+
+          </div>
+
+          <div
+            class="text-xs
+                   text-slate-500
+                   mt-1">
+
+            Preventive Maintenance
+
+          </div>
+
+        </button>
+
+
+        <button
+          onclick="openHistory()"
+          class="bg-white
+                 rounded-2xl
+                 p-5
+                 text-left
+                 shadow-sm
+                 hover:shadow-md
+                 transition">
+
+          <div class="text-3xl mb-3">
+            📊
+          </div>
+
+          <div
+            class="font-semibold
+                   text-slate-800">
+
+            ประวัติงาน
+
+          </div>
+
+          <div
+            class="text-xs
+                   text-slate-500
+                   mt-1">
+
+            ประวัติการทำงาน
+
+          </div>
+
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+<? } ?>
+
+<script>
+
+const LIFF_ID = '2011045112-nTERJAZu';
+
+// URL Web App ของ Google Apps Script
+const GAS_URL =
+  'https://script.google.com/macros/s/XXXXXXXXXXXX/exec';
+
+
+let currentUser = null;
+let currentIdToken = null;
+
+
+/**
+ * ==========================================
+ * เริ่มต้นระบบ
+ * ==========================================
+ */
+async function initApp() {
+
+  try {
+
+    console.log('Starting LIFF...');
+
+
+    // ------------------------------------------
+    // LIFF Init
+    // ------------------------------------------
+
+    await liff.init({
+      liffId: LIFF_ID
+    });
+
+
+    console.log('LIFF initialized');
+
+
+    // ------------------------------------------
+    // ตรวจสอบ Login
+    // ------------------------------------------
+
+    if (!liff.isLoggedIn()) {
+
+      console.log(
+        'LINE user not logged in'
+      );
+
+      liff.login();
+
+      return;
+    }
+
+
+    // ------------------------------------------
+    // ขอ ID Token
+    // ------------------------------------------
+
+    const idToken =
+      liff.getIDToken();
+
+
+    if (!idToken) {
+
+      throw new Error(
+        'ไม่สามารถรับ LINE ID Token ได้'
+      );
+
+    }
+
+
+    currentIdToken =
+      idToken;
+
+
+    console.log(
+      'LINE ID Token received'
+    );
+
+
+    // ------------------------------------------
+    // Decode สำหรับแสดง UI เท่านั้น
+    //
+    // สำคัญ:
+    // ข้อมูลตรงนี้ "ห้ามใช้ยืนยันตัวตน"
+    // ------------------------------------------
+
+    const decoded =
+      liff.getDecodedIDToken();
+
+
+    if (decoded) {
+
+      currentUser = {
+
+        userId:
+          decoded.sub || '',
+
+        displayName:
+          decoded.name || '',
+
+        pictureUrl:
+          decoded.picture || ''
+
+      };
+
+
+      // แสดง Profile
+
+      const profileImage =
+        document.getElementById(
+          'profileImage'
+        );
+
+
+      const displayName =
+        document.getElementById(
+          'displayName'
+        );
+
+
+      if (profileImage) {
+
+        profileImage.src =
+          currentUser.pictureUrl || '';
+
+      }
+
+
+      if (displayName) {
+
+        displayName.textContent =
+          currentUser.displayName || '';
+
+      }
+
+    }
+
+
+    // ------------------------------------------
+    // ตรวจสอบ User กับ GAS
+    //
+    // ไม่ส่ง userId แล้ว
+    // ส่งเฉพาะ ID Token
+    // ------------------------------------------
+
+    checkUserWithToken(
+      idToken
+    );
+
+
+  }
+  catch (error) {
+
+    console.error(
+      'LIFF ERROR:',
+      error
+    );
+
+
+    showError(
+      error.message ||
+      'ไม่สามารถเชื่อมต่อ LINE ได้'
+    );
+
+  }
+
+}
+
+
+/**
+ * ==========================================
+ * ตรวจสอบ User
+ * ==========================================
+ */
+function checkUserWithToken(
+  idToken
+) {
+
+  showLoading(
+    'กำลังตรวจสอบบัญชี LINE...'
+  );
+
+
+  const url =
+    GAS_URL +
+    '?action=checkUser' +
+    '&idToken=' +
+    encodeURIComponent(
+      idToken
+    );
+
+
+  console.log(
+    'Check User URL:',
+    url
+  );
+
+
+  fetch(url, {
+
+    method: 'GET',
+
+    redirect: 'follow'
+
+  })
+
+  .then(function(response) {
+
+    if (!response.ok) {
+
+      throw new Error(
+        'Server Error: ' +
+        response.status
+      );
+
+    }
+
+    return response.json();
+
+  })
+
+  .then(function(result) {
+
+    console.log(
+      'Check user:',
+      result
+    );
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message ||
+        'ไม่สามารถตรวจสอบ User ได้'
+      );
+
+    }
+
+
+    // ----------------------------------------
+    // User ลงทะเบียนแล้ว
+    // ----------------------------------------
+
+    if (result.registered) {
+
+      currentUser =
+        result.user ||
+        currentUser;
+
+
+      showMainPage();
+
+      return;
+
+    }
+
+
+    // ----------------------------------------
+    // User ใหม่
+    // ----------------------------------------
+
+    showRegisterPage();
+
+  })
+
+  .catch(function(error) {
+
+    console.error(
+      'CHECK USER ERROR:',
+      error
+    );
+
+
+    showError(
+      error.message ||
+      'ไม่สามารถตรวจสอบ User ได้'
+    );
+
+  });
+
+}
+
+
+/**
+ * ==========================================
+ * โหลด Department
+ * ==========================================
+ */
+function loadDepartments() {
+
+  const select =
+    document.getElementById(
+      'department'
+    );
+
+
+  if (!select) {
+    return;
+  }
+
+
+  select.innerHTML =
+    '<option value="">กำลังโหลดแผนก...</option>';
+
+
+  const url =
+    GAS_URL +
+    '?action=getDepartments';
+
+
+  fetch(url)
+
+    .then(function(response) {
+
+      if (!response.ok) {
+
+        throw new Error(
+          'ไม่สามารถโหลด Department ได้'
+        );
+
+      }
+
+      return response.json();
+
+    })
+
+    .then(function(departments) {
+
+      select.innerHTML =
+        '<option value="">-- เลือกแผนก --</option>';
+
+
+      if (
+        !departments ||
+        departments.length === 0
+      ) {
+
+        select.innerHTML =
+          '<option value="">ไม่พบแผนก</option>';
+
+        return;
+
+      }
+
+
+      departments.forEach(
+        function(dept) {
+
+          const option =
+            document.createElement(
+              'option'
+            );
+
+
+          option.value =
+            dept.department_id;
+
+
+          option.textContent =
+            dept.department_name;
+
+
+          option.dataset.name =
+            dept.department_name;
+
+
+          select.appendChild(
+            option
+          );
+
+        }
+      );
+
+    })
+
+    .catch(function(error) {
+
+      console.error(
+        error
+      );
+
+
+      showError(
+        error.message ||
+        'ไม่สามารถโหลดรายการแผนกได้'
+      );
+
+    });
+
+}
+
+
+/**
+ * ==========================================
+ * แสดง Register
+ * ==========================================
+ */
+function showRegisterPage() {
+
+  document
+    .getElementById('loading')
+    .classList.add('hidden');
+
+
+  document
+    .getElementById('registerPage')
+    .classList.remove('hidden');
+
+
+  loadDepartments();
+
+}
+
+
+/**
+ * ==========================================
+ * แสดง Main
+ * ==========================================
+ */
+function showMainPage() {
+
+  document
+    .getElementById('loading')
+    .classList.add('hidden');
+
+
+  document
+    .getElementById('registerPage')
+    .classList.add('hidden');
+
+
+  document
+    .getElementById('mainPage')
+    .classList.remove('hidden');
+
+}
+
+
+/**
+ * ==========================================
+ * Register User
+ * ==========================================
+ */
+function registerUser() {
+
+  hideError();
+
+
+  const name =
+    document
+      .getElementById('name')
+      .value
+      .trim();
+
+
+  const email =
+    document
+      .getElementById('email')
+      .value
+      .trim();
+
+
+  const department =
+    document.getElementById(
+      'department'
+    );
+
+
+  const departmentId =
+    department.value;
+
+
+  const selectedOption =
+    department.options[
+      department.selectedIndex
+    ];
+
+
+  const departmentName =
+    selectedOption
+      ? (
+          selectedOption.dataset.name ||
+          ''
+        )
+      : '';
+
+
+  // ------------------------------------------
+  // Validation
+  // ------------------------------------------
+
+  if (!name) {
+
+    showError(
+      'กรุณากรอกชื่อ - นามสกุล'
+    );
+
+    return;
+
+  }
+
+
+  if (!email) {
+
+    showError(
+      'กรุณากรอก Email'
+    );
+
+    return;
+
+  }
+
+
+  const emailRegex =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+  if (!emailRegex.test(email)) {
+
+    showError(
+      'รูปแบบ Email ไม่ถูกต้อง'
+    );
+
+    return;
+
+  }
+
+
+  if (!departmentId) {
+
+    showError(
+      'กรุณาเลือกแผนก'
+    );
+
+    return;
+
+  }
+
+
+  if (!currentIdToken) {
+
+    showError(
+      'ไม่พบ LINE ID Token กรุณาเปิดระบบใหม่'
+    );
+
+    return;
+
+  }
+
+
+  const button =
+    document.getElementById(
+      'registerButton'
+    );
+
+
+  button.disabled = true;
+
+  button.textContent =
+    'กำลังลงทะเบียน...';
+
+
+  // ------------------------------------------
+  // ส่งเฉพาะ ID Token
+  //
+  // ไม่ส่ง userId
+  // ไม่ส่ง displayName
+  // ไม่ส่ง pictureUrl
+  // ------------------------------------------
+
+  const payload = {
+
+    idToken:
+      currentIdToken,
+
+    name:
+      name,
+
+    email:
+      email,
+
+    department_id:
+      departmentId,
+
+    department_name:
+      departmentName
+
+  };
+
+
+  fetch(
+    GAS_URL,
+    {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type':
+          'text/plain;charset=utf-8'
+
+      },
+
+      body:
+        JSON.stringify({
+
+          action:
+            'registerUser',
+
+          data:
+            payload
+
+        })
+
+    }
+  )
+
+  .then(function(response) {
+
+    if (!response.ok) {
+
+      throw new Error(
+        'Server Error: ' +
+        response.status
+      );
+
+    }
+
+    return response.json();
+
+  })
+
+  .then(function(result) {
+
+    console.log(
+      'Register result:',
+      result
+    );
+
+
+    if (result.success) {
+
+      showMainPage();
+
+      return;
+
+    }
+
+
+    throw new Error(
+      result.message ||
+      'ไม่สามารถลงทะเบียนได้'
+    );
+
+  })
+
+  .catch(function(error) {
+
+    console.error(
+      'REGISTER ERROR:',
+      error
+    );
+
+
+    showError(
+      error.message ||
+      'เกิดข้อผิดพลาดในการลงทะเบียน'
+    );
+
+
+    button.disabled =
+      false;
+
+
+    button.textContent =
+      'ลงทะเบียน';
+
+  });
+
+}
+
+
+/**
+ * ==========================================
+ * Loading
+ * ==========================================
+ */
+function showLoading(
+  message
+) {
+
+  const loading =
+    document.getElementById(
+      'loading'
+    );
+
+
+  if (!loading) {
+    return;
+  }
+
+
+  loading.classList.remove(
+    'hidden'
+  );
+
+
+  const text =
+    loading.querySelector(
+      '.text-slate-600'
+    );
+
+
+  if (text) {
+
+    text.textContent =
+      message ||
+      'กำลังตรวจสอบข้อมูล...';
+
+  }
+
+}
+
+
+/**
+ * ==========================================
+ * Error
+ * ==========================================
+ */
+function showError(
+  message
+) {
+
+  const el =
+    document.getElementById(
+      'errorMessage'
+    );
+
+
+  if (!el) {
+
+    console.error(
+      message
+    );
+
+    return;
+
+  }
+
+
+  el.textContent =
+    message;
+
+
+  el.classList.remove(
+    'hidden'
+  );
+
+
+  document
+    .getElementById('loading')
+    ?.classList.add('hidden');
+
+}
+
+
+/**
+ * ==========================================
+ * Hide Error
+ * ==========================================
+ */
+function hideError() {
+
+  const el =
+    document.getElementById(
+      'errorMessage'
+    );
+
+
+  if (!el) {
+    return;
+  }
+
+
+  el.textContent = '';
+
+  el.classList.add(
+    'hidden'
+  );
+
+}
+
+
+/**
+ * ==========================================
+ * ตัวอย่างเปิดหน้าแจ้งซ่อม
+ * ==========================================
+ */
+function openRepair() {
+
+  alert(
+    'เปิดหน้าแจ้งซ่อม'
+  );
+
+}
+
+
+/**
+ * ==========================================
+ * Start
+ * ==========================================
+ */
+document.addEventListener(
+  'DOMContentLoaded',
+  function() {
+
+    initApp();
+
+  }
+);
+
+</script>
+
+
+</body>
+
+</html>
