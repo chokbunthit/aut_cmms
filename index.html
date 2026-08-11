@@ -205,11 +205,11 @@
       document.getElementById('loading-section').classList.add('hidden');
       document.getElementById('login-section').classList.add('hidden');
       document.getElementById('app-section').classList.remove('hidden');
-
+      hideLoading();
       // กำหนด URL ของ Iframe (สามารถส่ง User ID แนบไปใน URL หรือ Query String ได้)
       const targetIframeUrl = `${GAS_WEBAPP_URL}?userId=${encodeURIComponent(user.userId)}`;
       document.getElementById('formframe').src = targetIframeUrl;
-      hideLoading();
+     
     }
 
     function showLoginForm() {
