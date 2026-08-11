@@ -90,7 +90,12 @@
     // Config ค่าจากระบบ
     const LIFF_ID = "2011050588-FTDVMv4L"; // ใส่ LIFF ID ของคุณ
     const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbVNcOimN__MKpqPU5k_lNd8kc5HrLkqv6BMe901UntLrAoGfjJKQEZx1QSylXXgKBQyw/exec"; // URL Web App ของ GAS
-
+   function onIframeLoaded() {
+    const iframe = document.getElementById('formframe');
+    if (iframe && iframe.src && iframe.src !== "about:blank") {
+      hideLoading();
+    }
+  }
     window.onload = function() {
       checkSessionAndAuth();
     };
