@@ -198,7 +198,7 @@
       // บันทึกลง localStorage เพื่อให้สลับหน้าจอแล้วยังทำงานต่อได้
       localStorage.setItem("userSession", JSON.stringify(user));
       renderApp(user);
-      hideLoading();
+      
     }
 
     function renderApp(user) {
@@ -209,6 +209,7 @@
       // กำหนด URL ของ Iframe (สามารถส่ง User ID แนบไปใน URL หรือ Query String ได้)
       const targetIframeUrl = `${GAS_WEBAPP_URL}?userId=${encodeURIComponent(user.userId)}`;
       document.getElementById('formframe').src = targetIframeUrl;
+      hideLoading();
     }
 
     function showLoginForm() {
