@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="th">
 
 <head>
   <base target="_top" />
@@ -9,7 +9,7 @@
   
   <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <!-- Tailwind -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -28,12 +28,13 @@
 
 <body class="bg-gray-50">
 
-  <!-- 1. หน้า Loading ระหว่างรอตรวจสอบสิทธิ์ -->
-  <div id="loading-section" class="flex min-h-screen items-center justify-center bg-gray-100">
-    <div class="text-center">
-      <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-600 mb-3"></i>
-      <p class="text-gray-600 text-sm font-medium">กำลังตรวจสอบสิทธิ์การเข้าใช้งาน...</p>
+  <!-- 1. Full Screen Loading Overlay (เปิดทำงานทันทีตั้งแต่แรก) -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-white/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4">
+    <div class="relative flex items-center justify-center">
+      <div class="w-14 h-14 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+      <i class="fa-solid fa-wrench text-blue-600 text-sm absolute"></i>
     </div>
+    <p id="loadingText" class="mt-4 text-xs font-semibold text-gray-600 animate-pulse">กำลังเริ่มต้นระบบ...</p>
   </div>
 
   <!-- 2. หน้า Login Section (แสดงเฉพาะเปิดผ่าน Browser ทั่วไป) -->
@@ -80,50 +81,43 @@
     </div>
   </div>
 
-  <!-- 3. ส่วนแสดง App / Iframe เมื่อเข้าสู่ระบบแล้ว -->
+  <!-- 3. ส่วนแสดง App / Iframe เมื่อยืนยันตัวตนเรียบร้อย -->
   <div id="app-section" class="hidden">
-    <!-- iframe จะถูกใส่ URL ของ Google Apps Script หรือหน้าระบบของคุณ -->
-    <iframe id="formframe" src="" frameborder="0"></iframe>
-  </div>
-  <div id="loadingOverlay" class="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4 transition-opacity duration-300">
-    <div class="relative flex items-center justify-center">
-      <div class="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-      <i class="fa-solid fa-wrench text-blue-600 text-xs absolute"></i>
-    </div>
-    <p id="loadingText" class="mt-4 text-xs font-semibold text-gray-600 animate-pulse">กำลังดาวน์โหลดข้อมูลระบบ...</p>
+    <iframe id="formframe" src="" frameborder="0" onload="onIframeLoaded()"></iframe>
   </div>
 
   <script>
-    // Config ค่าจากระบบของคุณ
-    const LIFF_ID = "2011050588-FTDVMv4L"; // ใส่ LIFF ID
-    const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwVNcOimN__MKpqPU5k_lNd8kc5HrLkqv6BMe901UntLrAoGfjJKQEZx1QSylXXgKBQyw/exec"; // URL Web App ของ Google Apps Script
+    // Config ค่าจากระบบ
+    const LIFF_ID = "2011050588-FTDVMv4L"; // ใส่ LIFF ID ของคุณ
+    const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbVNcOimN__MKpqPU5k_lNd8kc5HrLkqv6BMe901UntLrAoGfjJKQEZx1QSylXXgKBQyw/exec"; // URL Web App ของ GAS
 
     window.onload = function() {
       checkSessionAndAuth();
     };
 
     async function checkSessionAndAuth() {
-      // 1. ตรวจสอบว่ามี Session เดิมค้างใน localStorage/sessionStorage หรือไม่
+      // 1. ตรวจสอบว่ามี Session ค้างไว้ใน Browser หรือไม่
       const savedSession = localStorage.getItem("userSession");
       if (savedSession) {
+        showLoading("กำลังเข้าสู่ระบบ...");
         const userData = JSON.parse(savedSession);
         renderApp(userData);
         return;
       }
 
-      // 2. ถ้าไม่มี Session ให้ลอง Verify ผ่าน LIFF
+      // 2. ถ้าไม่มี Session ให้ตรวจสอบผ่าน LIFF
       try {
-         showLoading("กำลังเชื่อมต่อระบบ LINE...");
+        showLoading("กำลังเชื่อมต่อระบบ LINE...");
         await liff.init({ liffId: LIFF_ID });
 
         if (liff.isLoggedIn()) {
+          showLoading("กำลัง ตรวจสอบสิทธิ์การใช้งาน...");
           const idToken = liff.getIDToken();
 
           if (idToken) {
-            // ใช้ fetch ส่ง idToken เข้า doPost ของ GAS
             const response = await fetch(GAS_WEBAPP_URL, {
               method: "POST",
-              headers: { "Content-Type": "text/plain;charset=utf-8" }, // เลี่ยง CORS Preflight
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
               body: JSON.stringify({
                 action: "verifyLiffToken",
                 idToken: idToken
@@ -189,31 +183,35 @@
       } catch (err) {
         console.error("Login Error:", err);
         showError("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
-      } finally {
+      } font-medium {
         btnText.textContent = "เข้าสู่ระบบ";
       }
     }
 
     function saveSessionAndRender(user) {
-      // บันทึกลง localStorage เพื่อให้สลับหน้าจอแล้วยังทำงานต่อได้
       localStorage.setItem("userSession", JSON.stringify(user));
       renderApp(user);
-      
     }
 
     function renderApp(user) {
-      document.getElementById('loading-section').classList.add('hidden');
+      showLoading("กำลังโหลดหน้าระบบ...");
       document.getElementById('login-section').classList.add('hidden');
       document.getElementById('app-section').classList.remove('hidden');
-      hideLoading();
-      // กำหนด URL ของ Iframe (สามารถส่ง User ID แนบไปใน URL หรือ Query String ได้)
-      const targetIframeUrl = `${GAS_WEBAPP_URL}?userId=${encodeURIComponent(user.userId)}`;
+
+      const targetIframeUrl = `${GAS_WEBAPP_URL}?userId=${encodeURIComponent(user.userId || '')}`;
       document.getElementById('formframe').src = targetIframeUrl;
-     
+    }
+
+    // เรียกเมื่อ iframe โหลดหน้าเว็บ GAS เสร็จเรียบร้อย
+    function onIframeLoaded() {
+      const iframe = document.getElementById('formframe');
+      if (iframe.src && iframe.src !== "about:blank") {
+        hideLoading();
+      }
     }
 
     function showLoginForm() {
-      document.getElementById('loading-section').classList.add('hidden');
+      hideLoading();
       document.getElementById('app-section').classList.add('hidden');
       document.getElementById('login-section').classList.remove('hidden');
     }
@@ -231,7 +229,8 @@
       }
       location.reload();
     }
-     function showLoading(text) {
+
+    function showLoading(text) {
       const overlay = document.getElementById("loadingOverlay");
       const textEl = document.getElementById("loadingText");
       if (textEl) textEl.innerText = text || "กำลังโหลดข้อมูล...";
