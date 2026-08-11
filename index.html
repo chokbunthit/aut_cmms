@@ -85,6 +85,13 @@
     <!-- iframe จะถูกใส่ URL ของ Google Apps Script หรือหน้าระบบของคุณ -->
     <iframe id="formframe" src="" frameborder="0"></iframe>
   </div>
+  <div id="loadingOverlay" class="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4 transition-opacity duration-300">
+    <div class="relative flex items-center justify-center">
+      <div class="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+      <i class="fa-solid fa-wrench text-blue-600 text-xs absolute"></i>
+    </div>
+    <p id="loadingText" class="mt-4 text-xs font-semibold text-gray-600 animate-pulse">กำลังดาวน์โหลดข้อมูลระบบ...</p>
+  </div>
 
   <script>
     // Config ค่าจากระบบของคุณ
@@ -106,6 +113,7 @@
 
       // 2. ถ้าไม่มี Session ให้ลอง Verify ผ่าน LIFF
       try {
+         showLoading("กำลังเชื่อมต่อระบบ LINE...");
         await liff.init({ liffId: LIFF_ID });
 
         if (liff.isLoggedIn()) {
@@ -190,6 +198,7 @@
       // บันทึกลง localStorage เพื่อให้สลับหน้าจอแล้วยังทำงานต่อได้
       localStorage.setItem("userSession", JSON.stringify(user));
       renderApp(user);
+      hideLoading();
     }
 
     function renderApp(user) {
@@ -220,6 +229,17 @@
         liff.logout();
       }
       location.reload();
+    }
+     function showLoading(text) {
+      const overlay = document.getElementById("loadingOverlay");
+      const textEl = document.getElementById("loadingText");
+      if (textEl) textEl.innerText = text || "กำลังโหลดข้อมูล...";
+      if (overlay) overlay.classList.remove("hidden");
+    }
+
+    function hideLoading() {
+      const overlay = document.getElementById("loadingOverlay");
+      if (overlay) overlay.classList.add("hidden");
     }
   </script>
 </body>
