@@ -83,7 +83,7 @@
 
   <!-- 3. ส่วนแสดง App / Iframe เมื่อยืนยันตัวตนเรียบร้อย -->
   <div id="app-section" class="hidden">
-    <iframe id="formframe" src="" frameborder="0" onload="onIframeLoaded()" ></iframe>
+    <iframe id="formframe" src="" frameborder="0" ></iframe>
   </div>
 
   <script>
@@ -94,12 +94,7 @@
     window.onload = function() {
       checkSessionAndAuth();
     };
-    function onIframeLoaded() {
-    const iframe = document.getElementById('formframe');
-    if (iframe && iframe.src && iframe.src !== "about:blank") {
-      hideLoading();
-    }
-  }
+
 
     async function checkSessionAndAuth() {
       // 1. ตรวจสอบว่ามี Session ค้างไว้ใน Browser หรือไม่
@@ -205,6 +200,12 @@ async function loginUser() {
       document.getElementById('login-section').classList.add('hidden');
       document.getElementById('app-section').classList.remove('hidden');
 
+      / ผูก Event onload ผ่าน JavaScript
+      iframe.onload = function() {
+        if (iframe.src && iframe.src !== "about:blank") {
+          hideLoading();
+        }
+      };
     
 
       const targetIframeUrl = `${GAS_WEBAPP_URL}?userId=${encodeURIComponent(user.userId || '')}`;
