@@ -207,13 +207,6 @@
       document.getElementById('formframe').src = targetIframeUrl;
     }
 
-    // เรียกเมื่อ iframe โหลดหน้าเว็บ GAS เสร็จเรียบร้อย
-    function onIframeLoaded() {
-      const iframe = document.getElementById('formframe');
-      if (iframe.src && iframe.src !== "about:blank") {
-        hideLoading();
-      }
-    }
 
     function showLoginForm() {
       hideLoading();
