@@ -200,14 +200,8 @@ async function loginUser() {
       document.getElementById('login-section').classList.add('hidden');
       document.getElementById('app-section').classList.remove('hidden');
 
-      / ผูก Event onload ผ่าน JavaScript
-      iframe.onload = function() {
-        if (iframe.src && iframe.src !== "about:blank") {
-          hideLoading();
-        }
-      };
     
-
+      hideLoading();     
       const targetIframeUrl = `${GAS_WEBAPP_URL}?userId=${encodeURIComponent(user.userId || '')}`;
       document.getElementById('formframe').src = targetIframeUrl;
     }
