@@ -200,7 +200,6 @@ async function loginUser() {
       document.getElementById('login-section').classList.add('hidden');
       document.getElementById('app-section').classList.remove('hidden');
 
-    
       hideLoading();     
       const targetIframeUrl = `${GAS_WEBAPP_URL}?userId=${encodeURIComponent(user.userId || '')}`;
       document.getElementById('formframe').src = targetIframeUrl;
