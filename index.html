@@ -74,7 +74,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-                    }
+        }
 
         .loading-spinner {
             width: 58px;
@@ -82,12 +82,14 @@
             border: 4px solid #dbeafe;
             border-top-color: #2563eb;
             border-radius: 50%;
-            animation: loadingSpin 0.8s linear infinite;        }
+            animation: loadingSpin 0.8s linear infinite;
+        }
 
         .loading-tool-icon {
             position: absolute;
             color: #2563eb;
-            font-size: 18px;        }
+            font-size: 18px;
+        }
 
         @keyframes loadingSpin {
             to {
@@ -135,6 +137,7 @@
             border-radius: 999px;
             animation: loadingProgress 1.4s ease-in-out infinite;
         }
+
         @keyframes loadingProgress {
             0% {
                 transform: translateX(-120%);
@@ -185,7 +188,7 @@
             font-size: 12px;
             line-height: 1.6;
             text-align: center;
-                }
+        }
 
         #loadingRetry {
             display: none;
@@ -218,17 +221,17 @@
 ========================================================= -->
 
     <div id="loadingOverlay">
-        <div class="loading-icon-wrapper">                     
+        <div class="loading-icon-wrapper">
             <div class="loading-spinner"></div>
-            <i class="fa-solid fa-wrench loading-tool-icon"></i>           
+            <i class="fa-solid fa-wrench loading-tool-icon"></i>
         </div>
         <div id="loadingText">กำลังเริ่มต้นระบบ...</div>
         <div id="loadingSubText">กรุณารอสักครู่</div>
-        <div class="loading-progress">            
-            <div class="loading-progress-bar"></div>            
+        <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
         </div>
         <div id="loadingError"></div>
-        <button id="loadingRetry" onclick="location.reload()">            
+        <button id="loadingRetry" onclick="location.reload()">
             <i class="fa-solid fa-rotate-right mr-1"></i>
         </button>
     </div>
@@ -241,7 +244,7 @@
 
     <div id="login-section"
         class="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <div class="w-full max-w-sm space-y-6">            
+        <div class="w-full max-w-sm space-y-6">
             <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
                 <!-- Logo -->
                 <div class="text-center mb-8">
@@ -297,7 +300,6 @@
             <p class="text-center text-[10px] text-gray-400 font-medium">
                 AUT CMMS v6.0 &copy; 2026
             </p>
-            ```
         </div>
     </div>
     <!-- =========================================================
@@ -322,7 +324,7 @@
 
         const LIFF_ID = "2011076529-EKhCiseU";
         const GAS_WEBAPP_URL =
-            "https://script.google.com/macros/s/AKfycbxShoa0Qca_bKLSvwTd7Gs0r_bHbjh0DhvTyx52PjHUvbGmUtIx2PdBa4l0XsTY57-qJA/exec";
+            "https://script.google.com/macros/s/AKfycbxf9Xsvi_Bhkom5po4ASiz3HN434nQuiE05s-RaEaV5M-3U_4uTeslbmu9voX4-92ucuA/exec";
 
         /* =========================================================
      START
