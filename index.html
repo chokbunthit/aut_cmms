@@ -32,7 +32,10 @@
             let url = `https://script.google.com/macros/s/AKfycbyprBc-C0Me4hwY9ByhDf8xHLIERj90U1iHXtTIvaKIHFQPxEGCY8cfm6vXUaJbN_ZNZA/exec`;
             document.getElementById("formframe").src = url;
       
-    }, err => console.error(err.code, error.message));
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+           runApp();
+    });
 
 </script>
 
